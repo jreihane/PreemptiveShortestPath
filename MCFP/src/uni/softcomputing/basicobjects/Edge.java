@@ -1,20 +1,14 @@
 package uni.softcomputing.basicobjects;
 
+import java.util.Comparator;
 import java.util.List;
 
-public class Edge {
-	
-	public Edge(Node beginNode, Node endNode, double lowerCapacity,
-			double upperCapacity, List<FuzzyCost> fuzzyCost) {
-		super();
-//		this.beginNode = beginNode;
-		this.endNode = endNode;
-		this.lowerCapacity = lowerCapacity;
-		this.upperCapacity = upperCapacity;
-		this.fuzzyCost = fuzzyCost;
-	}
+//import uni.softcomputing.basicobjects.FuzzyCost.Comparators;
+
+public class Edge implements Comparable<Edge>{
 
 //	Node beginNode = null;
+	
 	Node endNode = null;
 	
 	// lower capacity
@@ -27,8 +21,27 @@ public class Edge {
 	double capacity = 0.0;
 	
 	// the priority of k_th element is more than k+1_th element
-	List<FuzzyCost> fuzzyCost = null;
+	FuzzyCost fuzzyCost = null;
+	
 
+	public Edge(Node endNode, double lowerCapacity,
+			double upperCapacity, FuzzyCost fuzzyCost) {
+		super();
+//		this.beginNode = beginNode;
+		this.endNode = endNode;
+		this.lowerCapacity = lowerCapacity;
+		this.upperCapacity = upperCapacity;
+		this.fuzzyCost = fuzzyCost;
+	}
+	
+//	public Node getBeginNode() {
+//		return beginNode;
+//	}
+//
+//	public void setBeginNode(Node beginNode) {
+//		this.beginNode = beginNode;
+//	}
+	
 	public Node getEndNode() {
 		return endNode;
 	}
@@ -53,11 +66,11 @@ public class Edge {
 		this.upperCapacity = upperCapacity;
 	}
 
-	public List<FuzzyCost> getFuzzyCost() {
+	public FuzzyCost getFuzzyCost() {
 		return fuzzyCost;
 	}
 
-	public void setFuzzyCost(List<FuzzyCost> fuzzyCost) {
+	public void setFuzzyCost(FuzzyCost fuzzyCost) {
 		this.fuzzyCost = fuzzyCost;
 	}
 
@@ -77,5 +90,20 @@ public class Edge {
 			this.capacity = capacity;
 	}
 	
+	@Override
+	public int compareTo(Edge o) {
+		return Comparators.PRIORITY.compare(this, o);
+	}
 	
+	public static class Comparators {
+
+      public static Comparator<Edge> PRIORITY = new Comparator<Edge>() {
+          @Override
+          public int compare(Edge o1, Edge o2) {
+//          	int result = o1.fuzzyCost.priority.compareTo(o2.fuzzyCost.priority);
+          	int result = 0;
+          	return result;
+          }
+      };
+	}
 }
