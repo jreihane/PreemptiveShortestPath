@@ -8,7 +8,7 @@ import java.util.List;
 public class FuzzyCost {//implements Comparable<FuzzyCost>
 
 	List<Double> priorities = null;
-	List<Double> costVector = null;
+	double[] costVector = null;
 
 	/**
 	 * @return the priorities
@@ -27,14 +27,14 @@ public class FuzzyCost {//implements Comparable<FuzzyCost>
 	/**
 	 * @return the costVector
 	 */
-	public List<Double> getCostVector() {
+	public double[] getCostVector() {
 		return costVector;
 	}
 
 	/**
 	 * @param costVector the costVector to set
 	 */
-	public void setCostVector(List<Double> costVector) {
+	public void setCostVector(double[] costVector) {
 		this.costVector = costVector;
 	}
 	

@@ -46,13 +46,24 @@ public class LabelCorrectingAlg {
 			// which means all links' costs should be the minimum
 			Node iNode = null;
 			List<Edge> sLinks = s.getLinks();
+			double[] dj2 = null;
 			for(int i = 0; i < sLinks.size(); i++){
-				Node endOfLink = sLinks.get(i).getEndNode();
+				Edge currentEdge = sLinks.get(i);
+				Node endOfLink = currentEdge.getEndNode();
 				if(iNode == null){
 					iNode = endOfLink;
 				}
 				else{
 //					int diff = MCFPModel.compareFuzzyCosts(iNode.get, endOfLink);
+					if(dj2 == null){
+						dj2 = currentEdge.getFuzzyCost().getCostVector();
+					}
+					else{
+						
+						if(MCFPModel.compareLexicographic(dj2, currentEdge.getFuzzyCost().getCostVector()) == 1){
+							iNode = null;
+						}
+					}
 				}
 			}
 			
@@ -65,29 +76,23 @@ public class LabelCorrectingAlg {
 				Edge currentEdge = iLinks.get(i);
 				Node endOfLink =  currentEdge.getEndNode();
 
-				// 3-1 if dj >(lex) di + cij
-				List<Double> cij = currentEdge.getFuzzyCost().getCostVector();
-//				for(int k = 0; k < cij.size(); k++){
-					double currentC = cij.get(k);
-					double[] dj = endOfLink.getDj();
-					double[] di = iNode.getDj();
-					double[] ddd = new double[di.length];
-					double[] diPlucCij = Util.sumTwoArrays(di, cij.toArray(ddd));
-					if(MCFPModel.compareLexicographic(dj, diPlucCij) == 1){
-						
-					}
-//				}
-//				if(endOfLink.getMinDistance() > (iNode.getMinDistance() + currentEdge.getFuzzyCost().getMostPossible())){
-//					// 3-1-1 dj = di + cij
-//					endOfLink.setMinDistance(iNode.getMinDistance() + currentEdge.getFuzzyCost().getMostPossible());
-//					
-//					// 3-1-2 predj = i
-//					endOfLink.setPreviousNode(iNode);
-//					
-//					// 3-1-3 if j is not in list L, insert node j in L
-//					if(!L.contains(endOfLink))
-//						L.add(endOfLink);
-//				}
+				double[] cij = currentEdge.getFuzzyCost().getCostVector();
+				double[] dj = endOfLink.getDj();
+				double[] di = iNode.getDj();
+				double[] diPlucCij = Util.sumTwoArrays(di, cij);
+
+				// 3-1 if dj >(lex) di + cij				
+				if(MCFPModel.compareLexicographic(dj, diPlucCij) == 1){
+					// 3-1-1 dj = di + cij
+					dj = diPlucCij;
+					
+					// 3-1-2 predj = i
+					endOfLink.setPreviousNode(iNode);
+					
+					// 3-1-3 if j is not in list L, insert node j in L
+					if(!L.contains(endOfLink))
+						L.add(endOfLink);
+				}
 			}
 		}
 	}

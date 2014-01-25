@@ -23,18 +23,18 @@ public class MCFPModel {
 		if(f1 == null && f2 == null)
 			return 0;
 		
-		List<Double> f1CostVector = f1.getCostVector();
-		List<Double> f2CostVector = f2.getCostVector();
+		double[] f1CostVector = f1.getCostVector();
+		double[] f2CostVector = f2.getCostVector();
 		
-		if(f1CostVector.size() > f2CostVector.size())
+		if(f1CostVector.length > f2CostVector.length)
 			return 1;
-		if(f2CostVector.size() > f1CostVector.size())
+		if(f2CostVector.length > f1CostVector.length)
 			return -1;
 		
-		for(int i = 0; i < f1CostVector.size(); i++){
-			if(f1CostVector.get(i) > f2CostVector.get(i))
+		for(int i = 0; i < f1CostVector.length; i++){
+			if(f1CostVector[i] > f2CostVector[i])
 				return 1;
-			if(f2CostVector.get(i) > f1CostVector.get(i))
+			if(f2CostVector[i] > f1CostVector[i])
 				return -1;
 		}
 		
