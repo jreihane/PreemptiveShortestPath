@@ -19,7 +19,7 @@ public class LabelCorrectingAlg {
 	 * @return dj			: preemptive shortest distance
 	 * @return predj		: predecessor node 
 	 */
-	public void labelCorrecting(List<Edge> links,List<Node> N, Node s){
+	public void labelCorrecting(List<Edge> links,List<Node> N, Node s, double[] costVector){
 		double[] ds = new double[N.size()];
 //		double[] dj = new double[N.size() - 1];
 //		

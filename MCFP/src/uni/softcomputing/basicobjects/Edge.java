@@ -20,6 +20,9 @@ public class Edge implements Comparable<Edge>{
 	// real value
 	double capacity = 0.0;
 	
+	// flow of link
+	double x = 0.0;
+	
 	// the priority of k_th element is more than k+1_th element
 	FuzzyCost fuzzyCost = null;
 	
@@ -105,5 +108,19 @@ public class Edge implements Comparable<Edge>{
           	return result;
           }
       };
+	}
+
+	/**
+	 * @return the x
+	 */
+	public double getX() {
+		return x;
+	}
+
+	/**
+	 * @param x the x to set
+	 */
+	public void setX(double x) {
+		this.x = x;
 	}
 }
