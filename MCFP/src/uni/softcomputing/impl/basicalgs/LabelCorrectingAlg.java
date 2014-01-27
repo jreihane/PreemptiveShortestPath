@@ -7,6 +7,7 @@ import java.util.PriorityQueue;
 
 import uni.softcomputing.basicobjects.Edge;
 import uni.softcomputing.basicobjects.FuzzyCost;
+import uni.softcomputing.basicobjects.LabelCorrectingTO;
 import uni.softcomputing.basicobjects.Node;
 import uni.softcomputing.basicobjects.Util;
 
@@ -19,7 +20,9 @@ public class LabelCorrectingAlg {
 	 * @return dj			: preemptive shortest distance
 	 * @return predj		: predecessor node 
 	 */
-	public void labelCorrecting(List<Edge> links,List<Node> N, Node s, double[] costVector){
+	public LabelCorrectingTO labelCorrecting(List<Edge> links,List<Node> N, Node s, double[] costVector){
+		LabelCorrectingTO result = new LabelCorrectingTO();
+		
 		double[] ds = new double[N.size()];
 //		double[] dj = new double[N.size() - 1];
 //		
@@ -92,9 +95,15 @@ public class LabelCorrectingAlg {
 					// 3-1-3 if j is not in list L, insert node j in L
 					if(!L.contains(endOfLink))
 						L.add(endOfLink);
+					
+//					LabelCorrectingTO l = new LabelCorrectingTO();
+					result.setDj(dj);
+					result.setPredj(iNode);
+					
 				}
 			}
 		}
+		return result;
 	}
 	
 //	private Node findBestNode(Node source, List<Node> L, List<Edge> links){

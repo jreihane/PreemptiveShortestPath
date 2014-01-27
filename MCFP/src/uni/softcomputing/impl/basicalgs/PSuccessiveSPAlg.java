@@ -4,12 +4,16 @@
 package uni.softcomputing.impl.basicalgs;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import uni.softcomputing.basicobjects.Edge;
 import uni.softcomputing.basicobjects.FuzzyCost;
+import uni.softcomputing.basicobjects.LabelCorrectingTO;
 import uni.softcomputing.basicobjects.Node;
 import uni.softcomputing.basicobjects.PSuccessiveTO;
+import uni.softcomputing.basicobjects.Util;
 
 /**
  * @author Reihane Zekri
@@ -20,14 +24,17 @@ public class PSuccessiveSPAlg {
 	private List<Node> N = null;
 	
 	public PSuccessiveTO pSuccessiveShortestPath(double[][] A, double[] c, List<Edge> links, double[] b){
-		PSuccessiveTO result = null;
+		PSuccessiveTO result = new PSuccessiveTO();
 		
 		// 1- set p = 0, e = b, r = u, test = 0
-		double pj = 0.0;
-		double[] e = b;
+//		double pj = 0.0;
+//		double[] e = b;
+		double[] x = new double[links.size()];
 		double[] r = new double[links.size()];
-		for(int i = 0; i < links.size(); i++)
+		for(int i = 0; i < links.size(); i++){
 			r[i] = links.get(i).getCapacity();
+			x[i] = links.get(i).getX();
+		}
 		double test = 0;
 		
 		// 2- for each i in N if ei < 0 add i to D and ei > 0 add i to E
@@ -48,7 +55,9 @@ public class PSuccessiveSPAlg {
 			cpk[i] = c[i];
 		}
 		
-		LabelCorrectingAlg labelCorrectingAlg = new LabelCorrectingAlg(); 
+		LabelCorrectingAlg labelCorrectingAlg = new LabelCorrectingAlg();
+		
+		Util util = new Util();
 		
 		// 4- while E is not empty and tes <= size(D)
 		int index = 0;
@@ -67,56 +76,69 @@ public class PSuccessiveSPAlg {
 			// 4-2 Apply algorithm 4.3 to find the preemptive shortest path dj
 			// 	and predecessor predj for each j in N when its inputs are links set Ag,
 			// 	source node s and cost vector c(p)(i,j)
-			for(int i = 0; i < N.size(); i++){
-				labelCorrectingAlg.labelCorrecting(Ag, E, s, cpk);
-			}
+//			for(int i = 0; i < N.size(); i++){
+			LabelCorrectingTO labelCorrectings = labelCorrectingAlg.labelCorrecting(Ag, N, s, cpk);
+//			}
 			
 			// 4-3 if dt is finite
+			double[] dt = t.getDj();
+			double[] infD = new double[dt.length];
+			Arrays.fill(infD, Double.POSITIVE_INFINITY);
+			int lessOrNot = MCFPModel.compareLexicographic(dt, infD);
 			
-			// 4-3-1 let p consists of links lay through path from node s to node t
-			List<Edge> p = null;
-			
-			// 4-3-2 determine pj' = pj - dj for each j in N
-			
-			// 4-3-3 set thelta = min{es, -et.min{rij}}
-			double thelta = 0.0;
-			
-			// 4-3-4 if thelta > 0
-			if(thelta > 0){
-				// 4-3-4-1 for each (i,j) in p
-				for(int j = 0; j < p.size(); j++){
+			if(lessOrNot == 1){
+				// 4-3-1 let p consists of links lay through path from node s to node t
+				List<Edge> p = util.DFS(s, t, null, null);
 				
-					// 4-3-4-1-1 set rij = rij - thelta, rji = rji + thelta
+				// 4-3-2 determine pj' = pj - dj for each j in N
+				for(int i = 0; i < N.size(); i++){
+					double[] subt = Util.subtractTwoArrays(N.get(i).getP(), labelCorrectings.getDj());
+					///////////////////////////////////////////////
+					N.get(i).setP(subt);
+				}
+				
+				// 4-3-3 set thelta = min{es, -et.min{rij}}
+				double thelta = Math.min(s.getE(), ((-1)* t.getE()) * Util.findMinOfArray(r));
+				
+				// 4-3-4 if thelta > 0
+				if(thelta > 0){
+					// 4-3-4-1 for each (i,j) in p
+					for(int j = 0; j < p.size(); j++){
 					
-					// 4-3-4-1-2 set es = es - thelta, et = et + thelta
-					s.setE(s.getE() - thelta);
-					t.setE(t.getE() + thelta);
-					
-					// 4-3-4-1-3 if es = 0 remove s from E and test = 0
-					if(s.getE() == 0){
-						E.remove(0);
-						test = 0;
+						// 4-3-4-1-1 set rij = rij - thelta, rji = rji + thelta
+						
+						// 4-3-4-1-2 set es = es - thelta, et = et + thelta
+						s.setE(s.getE() - thelta);
+						t.setE(t.getE() + thelta);
+						
+						// 4-3-4-1-3 if es = 0 remove s from E and test = 0
+						if(s.getE() == 0){
+							E.remove(0);
+							test = 0;
+						}
+						
+						// 4-3-4-1-4 if et = 0 remove t from D
+						if(t.getE() == 0)
+							D.remove(0);
+						
+						// 4-3-4-1-5 for each (i,j) in Ag update c(p,k)(i,j) = c(k)(i,j) - p(k)(i) + p(k)(j)
 					}
+				}
+				
+				// 4-3-5 else
+				else{
+					// 4-3-5-1 remove s from the head of D and add s to the tail of D
+					D.remove(0);
+					D.add(s);
 					
-					// 4-3-4-1-4 if et = 0 remove t from D
-					if(t.getE() == 0)
-						D.remove(0);
-					
-					// 4-3-4-1-5 for each (i,j) in Ag update c(p,k)(i,j) = c(k)(i,j) - p(k)(i) + p(k)(j)
+					// 4-3-5-2 test = test + 1
+					test++;
 				}
 			}
 			
-			// 4-3-5 else
-			else{
-				// 4-3-5-1 remove s from the head of D and add s to the tail of D
-				D.remove(0);
-				D.add(s);
-				
-				// 4-3-5-2 test = test + 1
-				test++;
-			}
-			
 		} // end of while
+		
+		double[] vk = new double[c.length];
 		
 		// 5- if test > size(D)
 		if(test > D.size()){
@@ -124,22 +146,27 @@ public class PSuccessiveSPAlg {
 			System.out.println("the problem is infeasible");
 			
 			// 5-2 v = [0...0]
+			Arrays.fill(vk, 0.0);
 		}
 		
 		// 6- else for each k = 1, ...K set vk = 0 and for each link (i,j) in A
 		// 	repeat:
+		Arrays.fill(vk, 0.0);
+		for(int i = 0; i < A.length; i++){
 		
 			// 6-1 x(i,j) = r(i,j)
 			
 			// 6-2 for k = 1,...,K repeat:
-			
+			for(int k = 0; k < c.length; k++){
 				// 6-2-1 vk = vk + c(k)(i,j)*x(i,j)
-
+				vk[k] = vk[k] + cpk[i]*x[i];
+			}
 		
+		}
+
+		result.setObjectiveValue(vk);
 		
 		// end of algorithm
-		
-		
 		return result;
 	}
 

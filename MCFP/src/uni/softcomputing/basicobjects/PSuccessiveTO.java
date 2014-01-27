@@ -11,19 +11,19 @@ import java.util.List;
  */
 public class PSuccessiveTO {
 
-	private List<Double> objectiveValue = null;
+	private double[] objectiveValue = null;
 	private double optimalFlow = 0.0;
 	
 	/**
 	 * @return the objectiveValue
 	 */
-	public List<Double> getObjectiveValue() {
+	public double[] getObjectiveValue() {
 		return objectiveValue;
 	}
 	/**
 	 * @param objectiveValue the objectiveValue to set
 	 */
-	public void setObjectiveValue(List<Double> objectiveValue) {
+	public void setObjectiveValue(double[] objectiveValue) {
 		this.objectiveValue = objectiveValue;
 	}
 	/**

@@ -9,6 +9,8 @@ public class FuzzyCost {//implements Comparable<FuzzyCost>
 
 	List<Double> priorities = null;
 	double[] costVector = null;
+	
+	double[] membership = null;
 
 	/**
 	 * @return the priorities

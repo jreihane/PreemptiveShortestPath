@@ -13,6 +13,7 @@ public class Node {
 	Node previousNode = null;
 	double[] dj = null;
 	double e = 0.0;
+	double[] p = null;
 
 	public Node getPreviousNode() {
 		return previousNode;
@@ -126,6 +127,20 @@ public class Node {
 	 */
 	public void setE(double e) {
 		this.e = e;
+	}
+
+	/**
+	 * @return the p
+	 */
+	public double[] getP() {
+		return p;
+	}
+
+	/**
+	 * @param p the p to set
+	 */
+	public void setP(double[] p) {
+		this.p = p;
 	}
 	
 }
