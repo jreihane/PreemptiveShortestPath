@@ -1,8 +1,5 @@
 package uni.softcomputing.impl.basicalgs;
 
-import java.util.List;
-
-import uni.softcomputing.basicobjects.Edge;
 import uni.softcomputing.basicobjects.FuzzyCost;
 import uni.softcomputing.basicobjects.Node;
 

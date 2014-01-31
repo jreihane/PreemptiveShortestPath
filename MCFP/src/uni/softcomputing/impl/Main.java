@@ -3,10 +3,6 @@
  */
 package uni.softcomputing.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import uni.softcomputing.basicobjects.FuzzyCost;
 
 /**
  * @author Reihane Zekri

@@ -1,13 +1,12 @@
 package uni.softcomputing.basicobjects;
 
 import java.util.Comparator;
-import java.util.List;
 
 //import uni.softcomputing.basicobjects.FuzzyCost.Comparators;
 
 public class Edge implements Comparable<Edge>{
 
-//	Node beginNode = null;
+	Node beginNode = null;
 	
 	Node endNode = null;
 	
@@ -21,7 +20,7 @@ public class Edge implements Comparable<Edge>{
 	double capacity = 0.0;
 	
 	// flow of link
-	double x = 0.0;
+	double[] x = null;
 	
 	double[] cp = null;
 	
@@ -29,23 +28,23 @@ public class Edge implements Comparable<Edge>{
 	FuzzyCost fuzzyCost = null;
 	
 
-	public Edge(Node endNode, double lowerCapacity,
+	public Edge(Node beginNode, Node endNode, double lowerCapacity,
 			double upperCapacity, FuzzyCost fuzzyCost) {
 		super();
-//		this.beginNode = beginNode;
+		this.beginNode = beginNode;
 		this.endNode = endNode;
 		this.lowerCapacity = lowerCapacity;
 		this.upperCapacity = upperCapacity;
 		this.fuzzyCost = fuzzyCost;
 	}
 	
-//	public Node getBeginNode() {
-//		return beginNode;
-//	}
-//
-//	public void setBeginNode(Node beginNode) {
-//		this.beginNode = beginNode;
-//	}
+	public Node getBeginNode() {
+		return beginNode;
+	}
+
+	public void setBeginNode(Node beginNode) {
+		this.beginNode = beginNode;
+	}
 	
 	public Node getEndNode() {
 		return endNode;
@@ -115,14 +114,14 @@ public class Edge implements Comparable<Edge>{
 	/**
 	 * @return the x
 	 */
-	public double getX() {
+	public double[] getX() {
 		return x;
 	}
 
 	/**
 	 * @param x the x to set
 	 */
-	public void setX(double x) {
+	public void setX(double[] x) {
 		this.x = x;
 	}
 

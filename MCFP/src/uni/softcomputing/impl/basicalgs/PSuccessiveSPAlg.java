@@ -5,11 +5,9 @@ package uni.softcomputing.impl.basicalgs;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import uni.softcomputing.basicobjects.Edge;
-import uni.softcomputing.basicobjects.FuzzyCost;
 import uni.softcomputing.basicobjects.LabelCorrectingTO;
 import uni.softcomputing.basicobjects.Node;
 import uni.softcomputing.basicobjects.PSuccessiveTO;
@@ -23,18 +21,22 @@ public class PSuccessiveSPAlg {
 
 	private List<Node> N = null;
 	
-	public PSuccessiveTO pSuccessiveShortestPath(double[][] A, double[] c, List<Edge> links, double[] b){
+	public PSuccessiveTO pSuccessiveShortestPath(List<Edge> A, double[] c, List<Edge> links, double[] b, double u){
 		PSuccessiveTO result = new PSuccessiveTO();
 		
 		// 1- set p = 0, e = b, r = u, test = 0
 //		double pj = 0.0;
 //		double[] e = b;
-		double[] x = new double[links.size()];
-		double[] r = new double[links.size()];
+//		double[] x = new double[links.size()];
+		double[] rij = new double[links.size()];
 		for(int i = 0; i < links.size(); i++){
-			r[i] = links.get(i).getCapacity();
-			x[i] = links.get(i).getX();
+			rij[i] = links.get(i).getCapacity();
+//			x[i] = links.get(i).getX();
 		}
+		
+		double[] rji = new double[links.size()];
+		
+		
 		double test = 0;
 		
 		// 2- for each i in N if ei < 0 add i to D and ei > 0 add i to E
@@ -68,8 +70,8 @@ public class PSuccessiveSPAlg {
 			
 			// 4-2 define Ag as a set including links (i,j) such that r(i,j) > 0
 			List<Edge> Ag = new ArrayList<Edge>();
-			for(int i = 0; i < r.length; i++){
-				if(r[i] > 0)
+			for(int i = 0; i < rij.length; i++){
+				if(rij[i] > 0)
 					Ag.add(links.get(i));
 			}
 			
@@ -98,7 +100,7 @@ public class PSuccessiveSPAlg {
 				}
 				
 				// 4-3-3 set thelta = min{es, -et.min{rij}}
-				double thelta = Math.min(s.getE(), ((-1)* t.getE()) * Util.findMinOfArray(r));
+				double thelta = Math.min(s.getE(), ((-1)* t.getE()) * Util.findMinOfArray(rij));
 				
 				// 4-3-4 if thelta > 0
 				if(thelta > 0){
@@ -106,6 +108,10 @@ public class PSuccessiveSPAlg {
 					for(int j = 0; j < p.size(); j++){
 					
 						// 4-3-4-1-1 set rij = rij - thelta, rji = rji + thelta
+						for(int i = 0; i < rij.length; i++){
+							rij[i] = rij[i] - thelta;
+							rji[i] = rji[i] + thelta;
+						}
 						
 						// 4-3-4-1-2 set es = es - thelta, et = et + thelta
 						s.setE(s.getE() - thelta);
@@ -122,6 +128,13 @@ public class PSuccessiveSPAlg {
 							D.remove(0);
 						
 						// 4-3-4-1-5 for each (i,j) in Ag update c(p,k)(i,j) = c(k)(i,j) - p(k)(i) + p(k)(j)
+						for(Edge link: Ag){
+							double[] ucp = new double[Ag.size()];
+							for(int k = 0; k < c.length; k++){
+								ucp[k] = c[k] - link.getBeginNode().getP()[k] + link.getEndNode().getP()[k];
+							}
+							link.setCp(ucp);
+						}
 					}
 				}
 				
@@ -152,23 +165,42 @@ public class PSuccessiveSPAlg {
 		// 6- else for each k = 1, ...K set vk = 0 and for each link (i,j) in A
 		// 	repeat:
 		Arrays.fill(vk, 0.0);
-		for(int i = 0; i < A.length; i++){
+		for(Edge link: A){
 		
 			// 6-1 x(i,j) = r(i,j)
+			link.setX(rji);
 			
 			// 6-2 for k = 1,...,K repeat:
 			for(int k = 0; k < c.length; k++){
 				// 6-2-1 vk = vk + c(k)(i,j)*x(i,j)
-				vk[k] = vk[k] + cpk[i]*x[i];
+				vk[k] = vk[k] + link.getCp()[k]*link.getX()[k];
 			}
 		
 		}
 
 		result.setObjectiveValue(vk);
+//		result.setOptimalFlow(x);
 		
 		// end of algorithm
 		return result;
 	}
+	
+	
+	
+//	private List<Edge> reverseLinks(List<Edge> originalLinks){
+//		List<Edge> result = new ArrayList<Edge>();
+//		
+//		for(Edge link: originalLinks){
+//			Edge l = link;
+//			l.setBeginNode(link.getEndNode());
+//			l.setEndNode(link.getBeginNode());
+//			
+//			result.add(l);
+//		}
+//		
+//		
+//		return result;
+//	}
 
 	/**
 	 * @return the n

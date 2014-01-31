@@ -30,6 +30,11 @@ public class Node {
 
 	public void setLinks(List<Edge> links) {
 		this.links = links;
+		if(links != null){
+			for(Edge link: links){
+				link.setBeginNode(this);
+			}
+		}
 	}
 
 	public String getLabel() {

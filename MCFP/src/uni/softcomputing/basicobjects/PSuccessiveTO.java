@@ -3,7 +3,6 @@
  */
 package uni.softcomputing.basicobjects;
 
-import java.util.List;
 
 /**
  * @author Reihane Zekri
@@ -12,7 +11,7 @@ import java.util.List;
 public class PSuccessiveTO {
 
 	private double[] objectiveValue = null;
-	private double optimalFlow = 0.0;
+	private double[] optimalFlow = null;
 	
 	/**
 	 * @return the objectiveValue
@@ -29,13 +28,13 @@ public class PSuccessiveTO {
 	/**
 	 * @return the optimalFlow
 	 */
-	public double getOptimalFlow() {
+	public double[] getOptimalFlow() {
 		return optimalFlow;
 	}
 	/**
 	 * @param optimalFlow the optimalFlow to set
 	 */
-	public void setOptimalFlow(double optimalFlow) {
+	public void setOptimalFlow(double[] optimalFlow) {
 		this.optimalFlow = optimalFlow;
 	}
 	
