@@ -21,12 +21,17 @@ public class PSuccessiveSPAlg {
 
 	private List<Node> N = null;
 	
-	public PSuccessiveTO pSuccessiveShortestPath(List<Edge> A, double[] c, List<Edge> links, double[] b, double u){
-		PSuccessiveTO result = new PSuccessiveTO();
+	public List<PSuccessiveTO> pSuccessiveShortestPath(List<Edge> A, double[] c, List<Edge> links, double[] b, double u){
+		List<PSuccessiveTO> result = new ArrayList<PSuccessiveTO>();
 		
 		// 1- set p = 0, e = b, r = u, test = 0
 //		double pj = 0.0;
 //		double[] e = b;
+		for(int i = 0; i < N.size(); i++){
+			Node n = N.get(i);
+			n.setE(b[i]);
+			// p is initialized to zero automatically
+		}
 //		double[] x = new double[links.size()];
 		double[] rij = new double[links.size()];
 		for(int i = 0; i < links.size(); i++){
@@ -166,6 +171,7 @@ public class PSuccessiveSPAlg {
 		// 	repeat:
 		Arrays.fill(vk, 0.0);
 		for(Edge link: A){
+			PSuccessiveTO result1 = new PSuccessiveTO();
 		
 			// 6-1 x(i,j) = r(i,j)
 			link.setX(rji);
@@ -173,12 +179,15 @@ public class PSuccessiveSPAlg {
 			// 6-2 for k = 1,...,K repeat:
 			for(int k = 0; k < c.length; k++){
 				// 6-2-1 vk = vk + c(k)(i,j)*x(i,j)
-				vk[k] = vk[k] + link.getCp()[k]*link.getX()[k];
+				vk[k] = link.getV()[k] + link.getCp()[k]*link.getX()[k];
 			}
-		
+			result1.setObjectiveValue(vk);
+			result1.setOptimalFlow(link.getX());
+			
+			result.add(result1);
 		}
 
-		result.setObjectiveValue(vk);
+//		result.setObjectiveValue(vk);
 //		result.setOptimalFlow(x);
 		
 		// end of algorithm
